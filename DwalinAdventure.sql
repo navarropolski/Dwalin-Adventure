@@ -1,0 +1,37 @@
+create table CENA (
+	ID INT primary key AUTO_INCREMENT,
+	NOME VARCHAR (100),
+	DESCRICAO TEXT 
+);
+
+create table OBJETO (
+	ID INT primary key AUTO_INCREMENT,
+	NOME VARCHAR (100),
+	DESCRICAO TEXT
+);
+
+create table CENA_OBJETO (
+	ID INT primary key AUTO_INCREMENT,
+	ID_CENA INT,
+	ID_OBJETO INT,
+	USAR BOOLEAN default FALSE,
+	foreign key (ID_CENA) references CENA (ID),
+	foreign key (ID_OBJETO) references OBJETO (ID)
+);
+
+create table INVENTORY (
+	ID INT primary key auto_increment,
+	ID_JOGADOR INT,
+	ID_OBJETO INT,
+	foreign key (ID_OBJETO) references OBJETO(ID)
+);
+
+insert into CENA VALUES (
+	'1','ENTRANDO NA MONTANHA','DWALIN ENTRA NA MONTANHA CINZENTA'
+);
+
+update CENA_OBJETO 
+set 1 = '1','MONTANHA CINZENTA','DWALIN SE AVENTURA NA MONTANHA, DESFILADEIROS ÚMIDOS, PINHEIROS SOLITÁRIOS COBERTOS DE NEVE ADORNAM O AMBIENTE'
+WHERE ID_CENA = 1 AND ID_OBJETO = 2;
+
+select * from CENA;
