@@ -34,4 +34,7 @@ update CENA_OBJETO
 set 1 = '1','MONTANHA CINZENTA','DWALIN SE AVENTURA NA MONTANHA, DESFILADEIROS ÚMIDOS, PINHEIROS SOLITÁRIOS COBERTOS DE NEVE ADORNAM O AMBIENTE'
 WHERE ID_CENA = 1 AND ID_OBJETO = 2;
 
-select * from CENA;
+update CENA set NOME = "Prólogo", descricao = "Dwalin’s Adventure - Desbrave a cidade perdida de Khaz Badûr como Dwalin o anão explorador, situada nas profundezas das Montanhas Cinzentas em sua perigosa jornada para recuperar sua herança de família, a picareta diamantada de Durin. Sozinho na escuridão prossiga com cautela pois não se sabe o que pode habitar a cidade perdida dos anões, utilize a astúcia e ambição de Dwalin e todas as ferramentas que puder encontrar para enfrentar os desafios à frente.
+" where id = 1;
+
+select * from CENA
