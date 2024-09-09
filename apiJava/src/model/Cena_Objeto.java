@@ -5,6 +5,7 @@ public class Cena_Objeto {
     private Integer idObjeto;
     private Integer idCena;
     private String nome;
+    private String usar;
 
     public Integer getIdCenaObjeto() {
         return idCenaObjeto;
@@ -36,5 +37,23 @@ public class Cena_Objeto {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public String getUsar() {
+        return usar;
+    }
+
+    public void setUsar(String usar) {
+        this.usar = usar;
+    }
+
+    public boolean usarObjeto(Objeto Objeto) {
+        if (this.usar != null && !this.usar.isEmpty()) {
+            System.out.println("Você pode usar o comando: use " + Objeto.getNome() + " no " + this.nome);
+            return true;
+        }else {
+            System.out.println("Você usou o " + Objeto.getNome() + " no " + this.nome + ".");
+            return false;
+        }
     }
 }
