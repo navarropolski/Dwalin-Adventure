@@ -43,4 +43,9 @@ INSERT INTO scene (name, description) VALUES
 ('O Suborno dos Goblins', 'Após derrotar os orcs, Dwalin prossegue e adentra um túnel apertado. O som de passos pequenos e rápidos ecoa ao seu redor. De repente, ele é cercado por um grupo de goblins, que surgem das sombras com suas lâminas enferrujadas e olhos brilhando de malícia. São muitos, e embora fracos individualmente, em grupo eles são letais. Dwalin se lembra do peso que está carregando em sua mochila e que os olhos dos goblins não brilham somente por malícia... Os goblins são gananciosos, e ele decide tentar um suborno para evitar uma luta desnecessária.'),
 ('A Câmara de Durin', 'Finalmente, Dwalin encontra a câmara real, o coração de Khaz Badûr. As portas de pedra gigantescas estão gravadas com a história de Durin e sua linhagem. Ao entrar, a sala se ilumina magicamente, revelando um trono de ouro e um cofre no centro. Dwalin sabe que sua herança está próxima, mas algo vigia nas sombras. Um rugido profundo reverbera pelas paredes, alertando-o para a presença de uma criatura ancestral que protege o cofre.');
 
+INSERT INTO itens (name, description, scene_id) VALUES
+('Chave Rúnica de Ferro', 'Uma chave antiga com inscrições rúnicas que brilham ao contato com a luz.', 2),
+('Livro Grande', 'Um livro grande em bom estado, encontrado em uma estante em meio aos livros queimados.', 3),
+('Machado de Duas Mãos de Karak', 'Um machado antigo e poderoso, encontrado num corpo de um  desafortunado anão.', 4),
+('Saco de Moedas de Ouro', 'Moedas de ouro que atraem olhos gananciosos.', 4);
 
