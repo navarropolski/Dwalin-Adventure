@@ -37,7 +37,11 @@ create table actions(
 
 ALTER TABLE actions CHANGE is_sucess is_success BOOLEAN;
 
-
+create table save (
+	id int auto_increment primary key,
+	scene_id int not null,
+	foreign key (scene_id) references scene(id)
+);
 
 
 INSERT INTO scene (name, description) VALUES
