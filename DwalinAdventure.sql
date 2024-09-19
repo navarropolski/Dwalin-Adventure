@@ -33,7 +33,12 @@ create table actions(
 	foreign key(item_id) references itens(id),
 	foreign key(scene_id) references scene(id),
 	foreign key(nextScene_id) references scene(id)
-); 
+);
+
+ALTER TABLE actions CHANGE is_sucess is_success BOOLEAN;
+
+
+
 
 INSERT INTO scene (name, description) VALUES
 ('Prólogo', 'Dwalin’s Adventure - Desbrave a cidade perdida de Khaz Badûr como Dwalin o anão explorador, situada nas profundezas das Montanhas Cinzentas em sua perigosa jornada para recuperar sua herança de família, a picareta diamantada de Durin. Sozinho na escuridão prossiga com cautela pois não se sabe o que pode habitar a cidade perdida dos anões. Utilize a astúcia e ambição de Dwalin e todas as ferramentas que puder encontrar para enfrentar os desafios à frente.'),
@@ -46,7 +51,7 @@ INSERT INTO scene (name, description) VALUES
 INSERT INTO itens (name, description, scene_id) VALUES
 ('Chave Rúnica de Ferro', 'Uma chave antiga com inscrições rúnicas que brilham ao contato com a luz.', 2),
 ('Livro Grande', 'Um livro grande em bom estado, encontrado em uma estante em meio aos livros queimados.', 3),
-('Machado de Duas Mãos de Karak', 'Um machado antigo e poderoso, encontrado num corpo de um  desafortunado anão.', 4),
+('Machado de Duas Mãos de Karak', 'Um machado antigo e poderoso, encontrado num corpo de um desafortunado anão.', 4),
 ('Saco de Moedas de Ouro', 'Moedas de ouro que atraem olhos gananciosos.', 4);
 
 INSERT INTO actions (item_id, scene_id, is_success, message, nextScene_id) VALUES
