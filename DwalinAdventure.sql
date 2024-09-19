@@ -43,6 +43,16 @@ create table save (
 	foreign key (scene_id) references scene(id)
 );
 
+create table inventory (
+	id int auto_increment primary key,
+	item_id int not null,
+	scene_id int not null,
+	used_in_scene_id int,
+	is_used boolean default false,
+	foreign key (item_id) references itens(id),
+	foreign key (scene_id) references scene(id),
+	foreign key (used_in_scene_id) references scene(id)
+);
 
 INSERT INTO scene (name, description) VALUES
 ('Prólogo', 'Dwalin’s Adventure - Desbrave a cidade perdida de Khaz Badûr como Dwalin o anão explorador, situada nas profundezas das Montanhas Cinzentas em sua perigosa jornada para recuperar sua herança de família, a picareta diamantada de Durin. Sozinho na escuridão prossiga com cautela pois não se sabe o que pode habitar a cidade perdida dos anões. Utilize a astúcia e ambição de Dwalin e todas as ferramentas que puder encontrar para enfrentar os desafios à frente.'),
