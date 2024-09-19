@@ -54,6 +54,14 @@ create table inventory (
 	foreign key (used_in_scene_id) references scene(id)
 );
 
+alter table itens
+	add column is_consumable boolean default false;
+
+alter table actions
+	add column requires_item boolean default false,
+	add column required_item_id int,
+	add foreign key (required_item_id) references itens(id);
+
 INSERT INTO scene (name, description) VALUES
 ('Prólogo', 'Dwalin’s Adventure - Desbrave a cidade perdida de Khaz Badûr como Dwalin o anão explorador, situada nas profundezas das Montanhas Cinzentas em sua perigosa jornada para recuperar sua herança de família, a picareta diamantada de Durin. Sozinho na escuridão prossiga com cautela pois não se sabe o que pode habitar a cidade perdida dos anões. Utilize a astúcia e ambição de Dwalin e todas as ferramentas que puder encontrar para enfrentar os desafios à frente.'),
 ('Entrada de Khaz Badûr', 'Dwalin está na boca de uma caverna colossal. As montanhas ao redor são inóspitas, com ventos cortantes que ecoam pelos corredores naturais, a entrada da cidade perdida está coberta de musgo e detritos. Ele acende uma tocha e nota uma inscrição nas paredes: "Aquele que entrar, que não volte de MÃOS vazias". À sua esquerda há uma curiosa estátua de um anão empunhando um machado em uma de suas mãos e a outra parece estar oferecendo algo, você chega mais perto para examinar e encontra uma CHAVE rúnica de ferro sob a mão do gentil anão de pedra.'),
