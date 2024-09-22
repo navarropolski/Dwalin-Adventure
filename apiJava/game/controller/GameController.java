@@ -15,7 +15,7 @@ public class GameController {
     private static Gson gson = new Gson();
 
     public static void main(String[] args) {
-        port(4567); // Porta para o Spark rodar
+        port(3306); // Porta para o Spark rodar
 
         get("/scene/:id", (req, res) -> {
             int sceneId = Integer.parseInt(req.params(":id"));

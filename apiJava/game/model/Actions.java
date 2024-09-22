@@ -21,7 +21,7 @@ public class Actions {
         this.requiredItemId = requiredItemId;
     }
 
-    // Getters
+
     public int getId() {
         return id;
     }
@@ -54,7 +54,7 @@ public class Actions {
         return requiredItemId;
     }
 
-    // Setters
+   
     public void setId(int id) {
         this.id = id;
     }
