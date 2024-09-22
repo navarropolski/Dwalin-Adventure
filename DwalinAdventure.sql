@@ -76,6 +76,12 @@ INSERT INTO itens (name, description, scene_id) VALUES
 ('Machado de Duas Mãos de Karak', 'Um machado antigo e poderoso, encontrado num corpo de um desafortunado anão.', 4),
 ('Saco de Moedas de Ouro', 'Moedas de ouro que atraem olhos gananciosos.', 4);
 
+INSERT INTO actions (item_id, scene_id, is_success, message, nextScene_id, requires_item, required_item_id) VALUES
+((SELECT id FROM itens WHERE name = 'Orc'), (SELECT id FROM scene WHERE name = 'A Caverna dos Orcs'), TRUE, 'Dwalin usa o Machado de Karak e derruba o Orc com um golpe certeiro.', NULL, TRUE, (SELECT id FROM itens WHERE name = 'Machado de Duas Mãos de Karak')),
+((SELECT id FROM itens WHERE name = 'Goblin'), (SELECT id FROM scene WHERE name = 'O Suborno dos Goblins'), TRUE, 'Dwalin usa o Saco de Moedas para subornar os goblins.', (SELECT id FROM scene WHERE name = 'A Câmara de Durin'), TRUE, (SELECT id FROM itens WHERE name = 'Saco de Moedas de Ouro')),
+((SELECT id FROM itens WHERE name = 'Cofre'), (SELECT id FROM scene WHERE name = 'A Câmara de Durin'), TRUE, 'Dwalin usa a Chave Rúnica de Ferro e abre o cofre, reivindicando sua herança.', NULL, TRUE, (SELECT id FROM itens WHERE name = 'Chave Rúnica de Ferro'));
+
+
 INSERT INTO actions (item_id, scene_id, is_success, message, nextScene_id) VALUES
 (NULL, 1, TRUE, 'Você decide continuar sua jornada e avança para a próxima cena.', (SELECT id FROM scene WHERE name = 'Entrada de Khaz Badûr')),
 
