@@ -39,6 +39,15 @@ public class GameController {
         get("/help", (req, res) -> {
             return "Comandos disponíveis: USE, CHECK, GET, INVENTORY, SAVE, LOAD, RESTART";
         });
+
+        // Nova rota para usar um item do inventário com um item da cena
+        post("/use_with", (req, res) -> {
+            String inventoryItemName = req.queryParams("inventory_item_name");
+            String sceneItemName = req.queryParams("scene_item_name");
+            int sceneId = Integer.parseInt(req.queryParams("scene_id"));
+
+            return useItemWith(inventoryItemName, sceneItemName, sceneId);
+        });
     }
 
     // Método para obter uma cena do banco
@@ -70,5 +79,44 @@ public class GameController {
             e.printStackTrace();
         }
         return "Item não encontrado na cena!";
+    }
+
+    // Novo método para usar um item do inventário com um item da cena
+    private static String useItemWith(String inventoryItemName, String sceneItemName, int sceneId) {
+        try (Connection connection = Database.getConnection()) {
+            Statement stmt = connection.createStatement();
+
+            // Verifica se o item está no inventário
+            ResultSet inventoryRs = stmt.executeQuery("SELECT * FROM inventory INNER JOIN itens ON inventory.item_id = itens.id WHERE itens.name = '" + inventoryItemName + "' AND inventory.is_used = false");
+            if (!inventoryRs.next()) {
+                return "Item '" + inventoryItemName + "' não está no inventário ou já foi usado.";
+            }
+
+            // Verifica se o item da cena existe
+            ResultSet sceneItemRs = stmt.executeQuery("SELECT * FROM itens WHERE name = '" + sceneItemName + "' AND scene_id = " + sceneId);
+            if (!sceneItemRs.next()) {
+                return "Item '" + sceneItemName + "' não foi encontrado na cena.";
+            }
+
+            // Verifica se há uma ação correspondente no banco
+            ResultSet actionRs = stmt.executeQuery("SELECT * FROM actions WHERE required_item_id = " + inventoryRs.getInt("item_id") + " AND scene_id = " + sceneId + " AND item_id = " + sceneItemRs.getInt("id"));
+            if (actionRs.next()) {
+                // Atualiza o inventário para marcar o item como usado
+                stmt.executeUpdate("UPDATE inventory SET is_used = true, used_in_scene_id = " + sceneId + " WHERE item_id = " + inventoryRs.getInt("item_id"));
+
+                // Retorna a mensagem de sucesso e avança para a próxima cena se houver
+                String message = actionRs.getString("message");
+                int nextSceneId = actionRs.getInt("nextScene_id");
+                if (nextSceneId > 0) {
+                    message += " Você avança para a próxima cena.";
+                }
+                return message;
+            } else {
+                return "Não há nenhuma ação correspondente para '" + inventoryItemName + "' com '" + sceneItemName + "' nesta cena.";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Ocorreu um erro ao tentar usar os itens.";
+        }
     }
 }
