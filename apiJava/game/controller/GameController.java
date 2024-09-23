@@ -35,25 +35,112 @@ public class GameController {
             return getItem(itemName, sceneId);
         });
 
+        post("/item/check", (req, res) -> {
+            String itemName = req.queryParams("item_name");
+            int sceneId = Integer.parseInt(req.queryParams("scene_id"));
+
+            // Verifica se o item está disponível na cena
+            String query = "SELECT description FROM itens WHERE name = '" + itemName + "' AND scene_id = " + sceneId;
+            try (Connection connection = Database.getConnection()) {
+                Statement stmt = connection.createStatement();
+                ResultSet rs = stmt.executeQuery(query);
+                if (rs.next()) {
+                    return "Descrição do item: " + rs.getString("description");
+                } else {
+                    return "Item não encontrado na cena!";
+                }
+            }
+        });
+
+
         // Rota de ajuda
         get("/help", (req, res) -> {
             return "Comandos disponíveis: USE, CHECK, GET, INVENTORY, SAVE, LOAD, RESTART";
         });
 
-        // Nova rota para usar um item do inventário com um item da cena
-        post("/use_with", (req, res) -> {
-            String inventoryItemName = req.queryParams("inventory_item_name");
-            String sceneItemName = req.queryParams("scene_item_name");
+        post("/item/use", (req, res) -> {
+            String itemName = req.queryParams("item_name");
             int sceneId = Integer.parseInt(req.queryParams("scene_id"));
 
-            return useItemWith(inventoryItemName, sceneItemName, sceneId);
+            // Verifica se o item está disponível na cena
+            String query = "SELECT * FROM itens WHERE name = '" + itemName + "' AND scene_id = " + sceneId;
+            try (Connection connection = Database.getConnection()) {
+                Statement stmt = connection.createStatement();
+                ResultSet rs = stmt.executeQuery(query);
+                if (rs.next()) {
+                    // Lógica para interagir com o item
+                    return "Você usou " + itemName + " na cena!";
+                } else {
+                    return "Item não encontrado na cena!";
+                }
+            }
         });
+
+        get("/inventory", (req, res) -> {
+            StringBuilder inventoryList = new StringBuilder("Itens no inventário:\n");
+
+            String query = "SELECT i.name FROM inventory inv JOIN itens i ON inv.item_id = i.id";
+            try (Connection connection = Database.getConnection()) {
+                Statement stmt = connection.createStatement();
+                ResultSet rs = stmt.executeQuery(query);
+                while (rs.next()) {
+                    inventoryList.append("- ").append(rs.getString("name")).append("\n");
+                }
+            }
+            return inventoryList.length() > 0 ? inventoryList.toString() : "Inventário vazio.";
+        });
+
+        post("/save", (req, res) -> {
+            // Lógica para salvar o estado do jogo, como a cena atual e o inventário
+            return "Jogo salvo com sucesso!";
+        });
+
+        post("/load", (req, res) -> {
+            // Lógica para carregar o estado do jogo a partir do banco de dados
+            return "Jogo carregado com sucesso!";
+        });
+
+        post("/restart", (req, res) -> {
+            // Lógica para reiniciar o jogo, limpar inventário e reiniciar a cena
+            return "Jogo reiniciado!";
+        });
+
+
+        post("/item/use-with", (req, res) -> {
+            String inventoryItemName = req.queryParams("inventory_item");
+            String sceneItemName = req.queryParams("scene_item");
+            int sceneId = Integer.parseInt(req.queryParams("scene_id"));
+
+            // Verifica se o item do inventário está presente
+            String invQuery = "SELECT * FROM inventory inv JOIN itens i ON inv.item_id = i.id WHERE i.name = '" + inventoryItemName + "'";
+
+            // Verifica se o item da cena está presente
+            String sceneQuery = "SELECT * FROM itens WHERE name = '" + sceneItemName + "' AND scene_id = " + sceneId;
+
+            try (Connection connection = Database.getConnection()) {
+                Statement stmt = connection.createStatement();
+                ResultSet invRs = stmt.executeQuery(invQuery);
+                if (invRs.next()) {
+                    ResultSet sceneRs = stmt.executeQuery(sceneQuery);
+                    if (sceneRs.next()) {
+                        // Lógica para interagir com os itens
+                        return "Você usou " + inventoryItemName + " com " + sceneItemName + " na cena!";
+                    } else {
+                        return "Item da cena não encontrado!";
+                    }
+                } else {
+                    return "Item do inventário não encontrado!";
+                }
+            }
+        });
+
     }
 
     // Método para obter uma cena do banco
     private static Scene getSceneById(int id) {
         try (Connection connection = Database.getConnection()) {
             Statement stmt = connection.createStatement();
+            System.out.println(id);
             ResultSet rs = stmt.executeQuery("SELECT * FROM scene WHERE id = " + id);
             if (rs.next()) {
                 return new Scene(rs.getInt("id"), rs.getString("name"), rs.getString("description"));
