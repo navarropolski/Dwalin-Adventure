@@ -62,6 +62,18 @@ alter table actions
 	add column required_item_id int,
 	add foreign key (required_item_id) references itens(id);
 
+INSERT INTO inventory (item_id, scene_id) 
+VALUES ((SELECT id FROM itens WHERE name = 'Chave Rúnica de Ferro'), (SELECT id FROM scene WHERE name = 'Entrada de Khaz Badûr'));
+
+INSERT INTO actions (item_id, scene_id, is_success, message, nextScene_id, requires_item, required_item_id) VALUES
+((SELECT id FROM itens WHERE name = 'Machado de Duas Mãos de Karak'), (SELECT id FROM scene WHERE name = 'A Caverna dos Orcs'), TRUE, 'Dwalin usa o Machado de Karak e derruba o Orc com um golpe certeiro.', NULL, TRUE, (SELECT id FROM itens WHERE name = 'Machado de Duas Mãos de Karak')),
+((SELECT id FROM itens WHERE name = 'Saco de Moedas de Ouro'), (SELECT id FROM scene WHERE name = 'O Suborno dos Goblins'), TRUE, 'Dwalin usa o Saco de Moedas de Ouro para subornar os goblins.', (SELECT id FROM scene WHERE name = 'A Câmara de Durin'), TRUE, (SELECT id FROM itens WHERE name = 'Saco de Moedas de Ouro')),
+((SELECT id FROM itens WHERE name = 'Chave Rúnica de Ferro'), (SELECT id FROM scene WHERE name = 'A Câmara de Durin'), TRUE, 'Dwalin usa a Chave Rúnica de Ferro e abre o cofre.', NULL, TRUE, (SELECT id FROM itens WHERE name = 'Chave Rúnica de Ferro'));
+
+UPDATE itens SET is_consumable = TRUE WHERE name = 'Saco de Moedas de Ouro';
+
+UPDATE inventory SET is_used = TRUE WHERE item_id = (SELECT id FROM itens WHERE name = 'Chave Rúnica de Ferro') AND scene_id = (SELECT id FROM scene WHERE name = 'A Câmara de Durin');
+
 INSERT INTO scene (name, description) VALUES
 ('Prólogo', 'Dwalin’s Adventure - Desbrave a cidade perdida de Khaz Badûr como Dwalin o anão explorador, situada nas profundezas das Montanhas Cinzentas em sua perigosa jornada para recuperar sua herança de família, a picareta diamantada de Durin. Sozinho na escuridão prossiga com cautela pois não se sabe o que pode habitar a cidade perdida dos anões. Utilize a astúcia e ambição de Dwalin e todas as ferramentas que puder encontrar para enfrentar os desafios à frente.'),
 ('Entrada de Khaz Badûr', 'Dwalin está na boca de uma caverna colossal. As montanhas ao redor são inóspitas, com ventos cortantes que ecoam pelos corredores naturais, a entrada da cidade perdida está coberta de musgo e detritos. Ele acende uma tocha e nota uma inscrição nas paredes: "Aquele que entrar, que não volte de MÃOS vazias". À sua esquerda há uma curiosa estátua de um anão empunhando um machado em uma de suas mãos e a outra parece estar oferecendo algo, você chega mais perto para examinar e encontra uma CHAVE rúnica de ferro sob a mão do gentil anão de pedra.'),
