@@ -96,32 +96,13 @@ public class GameController {
             return "Jogo reiniciado!";
         });
 
-
         post("/item/use-with", (req, res) -> {
             String inventoryItemName = req.queryParams("inventory_item");
             String sceneItemName = req.queryParams("scene_item");
             int sceneId = Integer.parseInt(req.queryParams("scene_id"));
 
-            String invQuery = "SELECT * FROM inventory inv JOIN itens i ON inv.item_id = i.id WHERE i.name = '" + inventoryItemName + "'";
-
-            String sceneQuery = "SELECT * FROM itens WHERE name = '" + sceneItemName + "' AND scene_id = " + sceneId;
-
-            try (Connection connection = Database.getConnection()) {
-                Statement stmt = connection.createStatement();
-                ResultSet invRs = stmt.executeQuery(invQuery);
-                if (invRs.next()) {
-                    ResultSet sceneRs = stmt.executeQuery(sceneQuery);
-                    if (sceneRs.next()) {
-                        return "Você usou " + inventoryItemName + " com " + sceneItemName + " na cena!";
-                    } else {
-                        return "Item da cena não encontrado!";
-                    }
-                } else {
-                    return "Item do inventário não encontrado!";
-                }
-            }
+            return useItemWith(inventoryItemName, sceneItemName, sceneId);
         });
-
     }
 
     private static Scene getSceneById(int id) {
@@ -141,22 +122,24 @@ public class GameController {
     private static String getItem(String itemName, int sceneId) {
         try (Connection connection = Database.getConnection()) {
             Statement stmt = connection.createStatement();
-            String query = "SELECT * FROM itens WHERE name = '" + itemName + "' AND scene_id = " + sceneId;
+            String query = "SELECT * FROM itens WHERE name = '" + itemName + "' AND scene_id = " + sceneId + " AND is_in_inventory = FALSE";
             ResultSet rs = stmt.executeQuery(query);
             if (rs.next()) {
                 stmt.execute("INSERT INTO inventory (item_id, scene_id) VALUES (" + rs.getInt("id") + ", " + sceneId + ")");
-                return "Item adicionado ao inventário!";
+                stmt.execute("UPDATE itens SET is_in_inventory = TRUE WHERE id = " + rs.getInt("id"));
+                return "Item '" + itemName + "' adicionado ao inventário!";
+            } else {
+                return "Item não encontrado na cena ou já está no inventário!";
             }
         } catch (Exception e) {
             e.printStackTrace();
+            return "Erro ao pegar o item.";
         }
-        return "Item não encontrado na cena!";
     }
 
     private static String useItemWith(String inventoryItemName, String sceneItemName, int sceneId) {
         try (Connection connection = Database.getConnection()) {
             Statement stmt = connection.createStatement();
-
             ResultSet inventoryRs = stmt.executeQuery("SELECT * FROM inventory INNER JOIN itens ON inventory.item_id = itens.id WHERE itens.name = '" + inventoryItemName + "' AND inventory.is_used = false");
             if (!inventoryRs.next()) {
                 return "Item '" + inventoryItemName + "' não está no inventário ou já foi usado.";
@@ -170,7 +153,6 @@ public class GameController {
             ResultSet actionRs = stmt.executeQuery("SELECT * FROM actions WHERE required_item_id = " + inventoryRs.getInt("item_id") + " AND scene_id = " + sceneId + " AND item_id = " + sceneItemRs.getInt("id"));
             if (actionRs.next()) {
                 stmt.executeUpdate("UPDATE inventory SET is_used = true, used_in_scene_id = " + sceneId + " WHERE item_id = " + inventoryRs.getInt("item_id"));
-
                 String message = actionRs.getString("message");
                 int nextSceneId = actionRs.getInt("nextScene_id");
                 if (nextSceneId > 0) {
