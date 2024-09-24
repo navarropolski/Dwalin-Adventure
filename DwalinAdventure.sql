@@ -74,6 +74,10 @@ UPDATE itens SET is_consumable = TRUE WHERE name = 'Saco de Moedas de Ouro';
 
 UPDATE inventory SET is_used = TRUE WHERE item_id = (SELECT id FROM itens WHERE name = 'Chave Rúnica de Ferro') AND scene_id = (SELECT id FROM scene WHERE name = 'A Câmara de Durin');
 
+INSERT INTO save (scene_id) VALUES ((SELECT id FROM scene WHERE name = 'A Câmara de Durin'));
+
+SELECT scene_id FROM save ORDER BY id DESC LIMIT 1;
+
 INSERT INTO scene (name, description) VALUES
 ('Prólogo', 'Dwalin’s Adventure - Desbrave a cidade perdida de Khaz Badûr como Dwalin o anão explorador, situada nas profundezas das Montanhas Cinzentas em sua perigosa jornada para recuperar sua herança de família, a picareta diamantada de Durin. Sozinho na escuridão prossiga com cautela pois não se sabe o que pode habitar a cidade perdida dos anões. Utilize a astúcia e ambição de Dwalin e todas as ferramentas que puder encontrar para enfrentar os desafios à frente.'),
 ('Entrada de Khaz Badûr', 'Dwalin está na boca de uma caverna colossal. As montanhas ao redor são inóspitas, com ventos cortantes que ecoam pelos corredores naturais, a entrada da cidade perdida está coberta de musgo e detritos. Ele acende uma tocha e nota uma inscrição nas paredes: "Aquele que entrar, que não volte de MÃOS vazias". À sua esquerda há uma curiosa estátua de um anão empunhando um machado em uma de suas mãos e a outra parece estar oferecendo algo, você chega mais perto para examinar e encontra uma CHAVE rúnica de ferro sob a mão do gentil anão de pedra.'),
