@@ -2,9 +2,7 @@ package controller;
 
 import com.google.gson.Gson;
 import model.Scene;
-import service.Database;
-import spark.Request;
-import spark.Response;
+import repository.Database;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
